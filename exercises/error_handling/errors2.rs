@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+ * @Date: 2022-12-28 21:00:00
+ * @LastEditors: onepisYa pis1@qq.com
+ * @LastEditTime: 2023-02-08 09:21:24
+ * @FilePath: /rustlings/exercises/error_handling/errors2.rs
+ * 路漫漫其修远兮，吾将上下而求索。
+ * @Description:
+ */
 // errors2.rs
 // Say we're writing a game where you can buy items with tokens. All items cost
 // 5 tokens, and whenever you purchase items there is a processing fee of 1
@@ -17,16 +26,24 @@
 // one is a lot shorter!
 // Execute `rustlings hint errors2` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
 use std::num::ParseIntError;
 
 pub fn total_cost(item_quantity: &str) -> Result<i32, ParseIntError> {
     let processing_fee = 1;
     let cost_per_item = 5;
-    let qty = item_quantity.parse::<i32>();
-
-    Ok(qty * cost_per_item + processing_fee)
+    // 写法 1
+    // here is the shorter way
+    // A Shortcut for Propagating Errors: the ? Operator
+    // http://doc.rust-lang.org/1.66.1/book/ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator
+    // let qty = item_quantity.parse::<i32>()?;
+    // 写法 2
+    let qty_result = item_quantity.parse::<i32>();
+    let qty_number = match qty_result {
+        Ok(num) => return Ok(num * cost_per_item + processing_fee),
+        Err(err) => return Err(err),
+    };
+    // 两种写法本质上是一样的，但是 ? 是一种快捷方式，依赖于 内部实现的 from trait
 }
 
 #[cfg(test)]

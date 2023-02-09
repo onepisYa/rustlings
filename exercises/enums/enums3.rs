@@ -1,11 +1,22 @@
+/*
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+ * @Date: 2022-12-28 21:00:00
+ * @LastEditors: onepisYa pis1@qq.com
+ * @LastEditTime: 2023-02-06 15:23:16
+ * @FilePath: /rustlings/exercises/enums/enums3.rs
+ * 路漫漫其修远兮，吾将上下而求索。
+ * @Description:
+ */
 // enums3.rs
 // Address all the TODOs to make the tests pass!
 // Execute `rustlings hint enums3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 enum Message {
-    // TODO: implement the message variant types based on their usage below
+    // DONE: implement the message variant types based on their usage below
+    Move(Point),
+    Echo(String),
+    ChangeColor((u8, u8, u8)),
+    Quit,
 }
 
 struct Point {
@@ -37,7 +48,13 @@ impl State {
     }
 
     fn process(&mut self, message: Message) {
-        // TODO: create a match expression to process the different message variants
+        // DONE: create a match expression to process the different message variants
+        match message {
+            Message::ChangeColor(s) => self.color = s,
+            Message::Echo(s) => (),
+            Message::Quit => self.quit = true,
+            Message::Move(s) => self.position = s,
+        }
     }
 }
 

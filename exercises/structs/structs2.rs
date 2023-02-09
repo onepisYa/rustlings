@@ -1,8 +1,15 @@
+/*
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+ * @Date: 2022-12-28 21:00:00
+ * @LastEditors: onepisYa pis1@qq.com
+ * @LastEditTime: 2023-02-06 00:30:28
+ * @FilePath: /rustlings/exercises/structs/structs2.rs
+ * 路漫漫其修远兮，吾将上下而求索。
+ * @Description:
+ */
 // structs2.rs
 // Address all the TODOs to make the tests pass!
 // Execute `rustlings hint structs2` or use the `hint` watch subcommand for a hint.
-
-// I AM NOT DONE
 
 #[derive(Debug)]
 struct Order {
@@ -35,7 +42,12 @@ mod tests {
     fn your_order() {
         let order_template = create_order_template();
         // TODO: Create your own order using the update syntax and template above!
-        // let your_order =
+        let your_order = Order {
+            name: String::from("Hacker in Rust"),
+            count: 1,
+            // 更新语法
+            ..order_template
+        };
         assert_eq!(your_order.name, "Hacker in Rust");
         assert_eq!(your_order.year, order_template.year);
         assert_eq!(your_order.made_by_phone, order_template.made_by_phone);

@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Date: 2022-12-28 21:00:00
+ * @LastEditors: onepisYa pis1@qq.com
+ * @LastEditTime: 2023-02-09 19:45:55
+ * @FilePath: /rustlings/exercises/traits/traits1.rs
+ * 路漫漫其修远兮，吾将上下而求索。
+ * @Description: 
+ */
 // traits1.rs
 // Time to implement some traits!
 //
@@ -9,14 +18,16 @@
 // implementing this trait.
 // Execute `rustlings hint traits1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 trait AppendBar {
     fn append_bar(self) -> Self;
 }
 
 impl AppendBar for String {
-    // TODO: Implement `AppendBar` for type `String`.
+    // DONE: Implement `AppendBar` for type `String`.
+    fn append_bar(mut self) -> Self {
+        self.push_str("Bar");
+        self
+    }
 }
 
 fn main() {

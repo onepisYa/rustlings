@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+ * @Date: 2022-12-28 21:00:00
+ * @LastEditors: onepisYa pis1@qq.com
+ * @LastEditTime: 2023-02-09 19:49:11
+ * @FilePath: /rustlings/exercises/traits/traits2.rs
+ * 路漫漫其修远兮，吾将上下而求索。
+ * @Description:
+ */
 // traits2.rs
 //
 // Your task is to implement the trait
@@ -11,13 +20,18 @@
 // you can do this!
 // Execute `rustlings hint traits2` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
 trait AppendBar {
     fn append_bar(self) -> Self;
 }
 
-// TODO: Implement trait `AppendBar` for a vector of strings.
+// DONE: Implement trait `AppendBar` for a vector of strings.
+impl AppendBar for Vec<String> {
+    fn append_bar(mut self) -> Self {
+        self.push("Bar".to_string());
+        self
+    }
+}
 
 #[cfg(test)]
 mod tests {

@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ * @Date: 2022-12-28 21:00:00
+ * @LastEditors: onepisYa pis1@qq.com
+ * @LastEditTime: 2023-02-06 22:32:36
+ * @FilePath: /rustlings/exercises/hashmaps/hashmaps2.rs
+ * 路漫漫其修远兮，吾将上下而求索。
+ * @Description: 
+ */
 // hashmaps2.rs
 
 // A basket of fruits in the form of a hash map is given. The key
@@ -10,8 +19,6 @@
 // Make me pass the tests!
 //
 // Execute `rustlings hint hashmaps2` or use the `hint` watch subcommand for a hint.
-
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
@@ -34,9 +41,10 @@ fn fruit_basket(basket: &mut HashMap<Fruit, u32>) {
     ];
 
     for fruit in fruit_kinds {
-        // TODO: Put new fruits if not already present. Note that you
+        // DONE: Put new fruits if not already present. Note that you
         // are not allowed to put any type of fruit that's already
         // present!
+        basket.entry(fruit).or_insert(2);
     }
 }
 

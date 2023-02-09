@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+ * @Date: 2022-12-28 21:00:00
+ * @LastEditors: onepisYa pis1@qq.com
+ * @LastEditTime: 2023-02-07 21:32:21
+ * @FilePath: /rustlings/exercises/hashmaps/hashmaps3.rs
+ * 路漫漫其修远兮，吾将上下而求索。
+ * @Description:
+ */
 // hashmaps3.rs
 
 // A list of scores (one per line) of a soccer match is given. Each line
@@ -14,15 +23,37 @@
 
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
+use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 
 // A structure to store team name and its goal details.
+#[derive(Debug)]
 struct Team {
     name: String,
     goals_scored: u8,
     goals_conceded: u8,
+}
+
+/// 用于更新 判断 team 是否存在，存在则更新 Team,
+/// 不存在则 插入新 Team
+fn update_team_goals(match_entry: Entry<String, Team>, team: Team) -> &mut Team {
+    match match_entry {
+        // 已有值，则更新
+        Entry::Occupied(entry) => {
+            let temp_team = entry.into_mut();
+            // 更新值
+            temp_team.goals_conceded += team.goals_conceded;
+            temp_team.goals_scored += team.goals_scored;
+            temp_team
+        }
+        // 空， 则插入
+        Entry::Vacant(entry) => entry.insert(team),
+    }
+    // 也可以直接使用 or_insert 如果是计次， 那么可以 直接 插入 0 ，
+    // 累乘 则可以 or_insert(1)
+    // 获取到返回的引用之后  直接进行 += 或者 *= 一举两得。
+    // 参考文档
+    // https://rustwiki.org/zh-CN/book/ch08-03-hash-maps.html#%E6%A0%B9%E6%8D%AE%E6%97%A7%E5%80%BC%E6%9B%B4%E6%96%B0%E4%B8%80%E4%B8%AA%E5%80%BC
 }
 
 fn build_scores_table(results: String) -> HashMap<String, Team> {
@@ -40,6 +71,24 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+
+        let team_1_name_copy = team_1_name.clone();
+        let team1 = Team {
+            name: team_1_name,
+            goals_scored: team_1_score.clone(),
+            goals_conceded: team_2_score.clone(),
+        };
+        let team1_entry = scores.entry(team_1_name_copy.clone());
+        update_team_goals(team1_entry, team1);
+
+        let team_2_name_copy = team_2_name.clone();
+        let team2 = Team {
+            name: team_2_name,
+            goals_scored: team_2_score,
+            goals_conceded: team_1_score,
+        };
+        let team2_entry = scores.entry(team_2_name_copy.clone());
+        update_team_goals(team2_entry, team2);
     }
     scores
 }
@@ -73,6 +122,8 @@ mod tests {
     fn validate_team_score_1() {
         let scores = build_scores_table(get_results());
         let team = scores.get("England").unwrap();
+
+        println!("{:#?}", scores);
         assert_eq!(team.goals_scored, 5);
         assert_eq!(team.goals_conceded, 4);
     }
