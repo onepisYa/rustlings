@@ -1,3 +1,12 @@
+/*
+ * Copyright (c) 2023 by onepisYa pis1@qq.com , All Rights Reserved.
+ * @Date: 2022-12-28 21:00:00
+ * @LastEditors: onepisYa pis1@qq.com
+ * @LastEditTime: 2023-02-12 20:19:09
+ * @FilePath: /rustlings/exercises/standard_library_types/box1.rs
+ * 路漫漫其修远兮，吾将上下而求索。
+ * @Description:
+ */
 // box1.rs
 //
 // At compile time, Rust needs to know how much space a type takes up. This becomes problematic
@@ -16,11 +25,11 @@
 //
 // Execute `rustlings hint box1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 #[derive(PartialEq, Debug)]
 pub enum List {
-    Cons(i32, List),
+    Cons(i32, Box<List>),
+    // 使用 Box 智能指针，包装一层，让编译器能够知道
+    // 可以计算出来类型的需要分配的内存的空间大小
     Nil,
 }
 
@@ -33,11 +42,16 @@ fn main() {
 }
 
 pub fn create_empty_list() -> List {
-    todo!()
+    // todo!()
+    // TODO:
+    List::Nil
 }
 
 pub fn create_non_empty_list() -> List {
-    todo!()
+    // todo!()
+    // TODO:
+    // 创建一个 List
+    List::Cons(32, Box::new(List::Nil))
 }
 
 #[cfg(test)]

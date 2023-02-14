@@ -3,6 +3,8 @@
 // You can read more about it at https://doc.rust-lang.org/std/convert/trait.From.html
 // Execute `rustlings hint from_into` or use the `hint` watch subcommand for a hint.
 
+// From trait 用于 value 到 value 的转换。
+
 #[derive(Debug)]
 struct Person {
     name: String,
@@ -12,6 +14,8 @@ struct Person {
 // We implement the Default trait to use it as a fallback
 // when the provided string is not convertible into a Person object
 impl Default for Person {
+    // 回退机制，默认值。
+    // 当 提供的 字符串不能转换到 Person 对象的时候。
     fn default() -> Person {
         Person {
             name: String::from("John"),
@@ -35,10 +39,95 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of Person
 // Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
+// name 为 空 和 字符串 length 为 0 返回 默认值
+// 切割出来 数组长度不等于 2 的也直接 返回默认值
+// age usize 类型
+// 逗号 分隔
+// 也就是说  我们只需要 字符长度不为 0，长度为 0 应该也可以切割。是不是就可以合并了？
 
+
+// 现在已经完成了这道题目
+// 我在想 优化下逻辑。
+// 嵌套 match 还是很丑陋
+// if 的写法好像更清晰？
+// NOTE: if 和 match 的使用也是需要根据实际场景来选择，
+// NOTE: 虽然结果一样，但是 不同的场景下，使用正确的方式，代码可读性会更高。
+
+// NOTE: 方法一
+// impl From<&str> for Person {
+//     fn from(s: &str) -> Person {
+//         let s_length = s.len();
+//         let splitted_s: Vec<&str> = s.split(",").collect();
+//         match splitted_s.len() {
+//             2 => {
+//                 let maybe_name = splitted_s[0];
+//                 let maybe_age = splitted_s[1];
+//                 println!("name: {maybe_name}, age: {maybe_age}");
+//                 match maybe_name {
+//                     "" => return Person::default(),
+//                     _ => {
+//                         return match maybe_age.parse::<usize>() {
+//                             Ok(age) => Person {
+//                                 name: maybe_name.to_string(),
+//                                 age,
+//                             },
+//                             Err(_) => Person::default(),
+//                         };
+//                     }
+//                 }
+//             }
+//             _ => {
+//                 return Person::default();
+//             }
+//         };
+//     }
+// }
+
+// 方法 二
+// NOTE: 学习到了一个 is_empty 的用法。 is_empty 配合 if 在当前这个场景还是比较好用的。
+// impl From<&str> for Person {
+//     fn from(s: &str) -> Person {
+//         if s.is_empty() {
+//             return Person::default();
+//         }
+
+//         let parts = s.split(',').collect::<Vec<&str>>();
+//         if parts.len() != 2 {
+//             return Person::default();
+//         }
+
+//         let name = parts[0].to_string();
+//         if name.is_empty() {
+//             return Person::default();
+//         }
+
+//         let age = match parts[1].parse::<usize>() {
+//             Ok(age) => age,
+//             Err(_) => return Person::default(),
+//         };
+
+//         Person { name, age }
+//     }
+// }
+
+// NOTE: 方法三
+// 这段代码可以的，我觉得可读性是比较高的
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        let parts = s.split(',').collect::<Vec<&str>>();
+        if parts.len() != 2
+            || s.is_empty()
+            || parts[0].is_empty()
+            || parts[1].parse::<usize>().ok().is_none()
+        {
+            return Person::default();
+        };
+
+        let name = parts[0].to_string();
+        let age = parts[1].parse::<usize>().unwrap();
+        // 上面已经判断过了，如果是 parse 肯定是成功的
+
+        Person { name, age }
     }
 }
 

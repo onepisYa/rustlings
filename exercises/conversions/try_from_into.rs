@@ -23,8 +23,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
-
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
 // You need to create an implementation for a tuple of three integers,
@@ -34,10 +32,29 @@ enum IntoColorError {
 // but the slice implementation needs to check the slice length!
 // Also note that correct RGB color values must be integers in the 0..=255 range.
 
+// 三种实现，Tuple 和 Array  以及 Slice 切片
+// 需要检查 slice 的长度
+// 以及 检查 数字是否是 0到 255范围
+
+fn color_validator(num: &i16) -> bool {
+    num > &0 && num <= &255
+}
+
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        match tuple {
+            // DONE:
+            (r, g, b) if color_validator(&r) && color_validator(&g) && color_validator(&b) => {
+                return Ok(Color {
+                    red: tuple.0 as u8,
+                    green: tuple.1 as u8,
+                    blue: tuple.2 as u8,
+                });
+            }
+            _ => Err(Self::Error::IntConversion),
+        }
     }
 }
 
@@ -45,6 +62,21 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        //DONE:
+        // TODO: 数组和 slice  的实现 都是一样的 仅仅是 调用的 对象不同
+        // TODO: 可不可以 将两个地方的实现抽象出来
+        // TODO: 仅仅在 try_from 中调用下就可以了。
+        let is_valid_color = arr.iter().all(color_validator);
+
+        if is_valid_color {
+            return Ok(Color {
+                red: arr[0] as u8,
+                green: arr[1] as u8,
+                blue: arr[2] as u8,
+            });
+        };
+
+        Err(Self::Error::IntConversion)
     }
 }
 
@@ -52,6 +84,21 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        //TODO:
+        if slice.len() == 3 {
+            let is_valid_color = slice.iter().all(color_validator);
+            if is_valid_color {
+                return Ok(Color {
+                    red: slice[0] as u8,
+                    green: slice[1] as u8,
+                    blue: slice[2] as u8,
+                });
+            };
+
+            Err(Self::Error::IntConversion)
+        } else {
+            return Err(Self::Error::BadLen);
+        }
     }
 }
 

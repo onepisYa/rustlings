@@ -26,9 +26,8 @@ enum ParsePersonError {
     NoName,
     // Wrapped error from parse::<usize>()
     ParseInt(ParseIntError),
+    //
 }
-
-// I AM NOT DONE
 
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
@@ -43,9 +42,64 @@ enum ParsePersonError {
 // As an aside: `Box<dyn Error>` implements `From<&'_ str>`. This means that if you want to return a
 // string error message, you can do so via just using return `Err("my error message".into())`.
 
+
+// --------------- 为本练习实现的一些工具 start ---------------
+
+macro_rules! try {
+    ($expr:expr) => {
+        match $expr {
+            Ok(val) =>  val,
+            Err(e) => return Err(Self::Err::ParseInt(e)),
+        }
+    };
+}
+
+impl From<ParseIntError> for ParsePersonError{
+    fn from(s: ParseIntError) -> ParsePersonError{
+        ParsePersonError::ParseInt(s)
+    }
+}
+
+
+// --------------- 为本练习实现的一些工具 end ---------------
+
+// 名字和年龄 任何一个无效或者缺失 都 return Err(Self::Err::ParseInt(ParseIntError));
+// 空字符串则 return Err(Self::Err::Empty);
+// length!=2 尾随逗号 或者 逗号缺失，或者 年龄缺失 return Err(Self::Err::BadLen);
+
 impl FromStr for Person {
     type Err = ParsePersonError;
+    // fn from_str(s: &str) -> Result<Person, Self::Err> {
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        let parts = s.split(',').collect::<Vec<&str>>();
+        if s.is_empty() {
+            return Err(Self::Err::Empty);
+        } else if parts.len() != 2 {
+            return Err(Self::Err::BadLen);
+        } else if parts[0].is_empty() {
+            return Err(Self::Err::NoName);
+        } else {
+            let name = parts[0].to_string();
+            // NOTE: 对于 age 的处理方式一
+            // match parts[1].parse::<usize>() {
+            //     Ok(age) => Ok(Person { name, age }),
+            //     Err(e) => return Err(Self::Err::ParseInt(e)),
+            // }
+
+            // NOTE: 对于 age 的处理方式二
+            // 定义一个宏来处理， 不过没有太大的意义，搞着玩
+            // let age = try!(parts[1].parse::<usize>());
+            // Ok(Person { name, age })
+
+            // NOTE: 对于 age 的处理三
+            // DONE: 自己布置的小作业，为 该类型实现 ? 操作符，
+            // DONE: 自动的 返回 对应的类型
+            // DONE: 如果出错则 返回 错误。
+            // 很好的学习和巩固了 From trait
+            let age = parts[1].parse::<usize>()?;
+            Ok(Person { name, age })
+        }
+
     }
 }
 
